@@ -15,9 +15,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 /**
  *
- * @author nchaudhry.bscs13seec
+ * @author mnasim.bscs14seecs
  */
-public class  Aplab5 {
+public class  Aplab3 {
 
   
  
@@ -85,5 +85,4 @@ class DBase
         }
     }
 };
-    
 }
