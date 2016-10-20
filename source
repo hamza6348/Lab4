@@ -3,86 +3,134 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
-package aplab5;
-
-import java.sql.*;
- import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+package lmsdistribution;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 /**
  *
  * @author mnasim.bscs14seecs
  */
-public class  Aplab3 {
+public class LMSdistribution {
+         LinkedList head=null;
+         LinkedList tail=null;
+    
+    public void Readcsv()
+    {
+        String csvFile = "Academic _Schedule.csv";
+         BufferedReader br = null;
+        String line = "";
+        String cvsSplitBy = "[,(-]"; 
+        try {
+            br = new BufferedReader(new FileReader(csvFile));
+            while ((line = br.readLine()) != null) {
+                LinkedList newnode=new LinkedList();
+                String [] slot = new String[5];
+                for(int i=0;i<5;i++)
+                {
+                 slot[i]=" ";   
+                }
+                slot=line.split(cvsSplitBy);
+                        newnode.startdate=slot[0];
+                    if(!" ".equals(slot[1]))
+                        newnode.enddate=slot[1];
+                    if(!" ".equals(slot[2]))
+                        newnode.activity=slot[2];
+                    if(!" ".equals(slot[3]))
+                        newnode.starttime=slot[3];
+                    if(!" ".equals(slot[4]))
+                        newnode.enddate=slot[4];
+                if(head==null &&tail==null)
+                {
+                    
+                    head=newnode;
+                    tail=newnode;
+                    head.next=null;
+                    tail.next=null;
+                }
+                else
+                {
+                   
+                    if(slot[0]!=null&&search(slot[2]))
+                        newnode.startdate=slot[0];
+                    if(slot[1]!=null && search(slot[2]))
+                        newnode.enddate=slot[1];
+                    if(slot[2]!=null&& search(slot[2]))
+                        newnode.activity=slot[2];
+                    if(slot[3]!=null&& search(slot[2]))
+                        newnode.starttime=slot[3];
+                    if(slot[4]!=null&& search(slot[2]))
+                        newnode.enddate=slot[4];
+                    LinkedList ptr;
+                    ptr=head;
+                    while (ptr.next!=null)
+                    {
+                        ptr=ptr.next;
+                    }
+                    if(ptr.next==null)
+                    {
+                        ptr.next=newnode;
+                        tail=newnode;
+                        newnode.next=null;
+                    }
+                }
 
-  
- 
-public class automateImport
-{
-    public static void main(String[] args) 
-    {
-        DBase db = new DBase();
-        Connection conn = db.connect(
-    "jdbc:mysql://localhost:3306/test","root","root");
-        db.importData(conn,args[0]);
-    }
- 
-}
- 
-class DBase
-{
-    public DBase()
-    {
-    }
- 
-    public Connection connect(String db_connect_str, 
-  String db_userid, String db_password)
-    {
-        Connection conn;
-        try
-        {
-            Class.forName(  
-    "com.mysql.jdbc.Driver").newInstance();
- 
-            conn = DriverManager.getConnection(db_connect_str, 
-    db_userid, db_password);
-         
-        }
-        catch(Exception e)
-        {
+            }
+
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-            conn = null;
-        }
- 
-        return conn;    
-    }
-     
-    public void importData(Connection conn,String filename)
-    {
-        Statement stmt;
-        String query;
- 
-        try
-        {
-            stmt = conn.createStatement(
-    ResultSet.TYPE_SCROLL_SENSITIVE,
-    ResultSet.CONCUR_UPDATABLE);
- 
-            query = "LOAD DATA INFILE '"+filename+
-    "' INTO TABLE testtable (text,price);";
- 
-            stmt.executeUpdate(query);
-                 
-        }
-        catch(Exception e)
-        {
+        } catch (IOException e) {
             e.printStackTrace();
-            stmt = null;
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } 
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+                
+            
+            }
+
+    
+               
+    }
+    public boolean search(String a)
+        {
+            LinkedList ptr;
+            if (head==null)
+                return false;
+            else 
+            {
+                ptr=head;
+                while(ptr!=null&&ptr.activity!=a)
+                {
+                    ptr=ptr.next;
+                }
+                if(ptr==null)
+                    return false;
+            }
+            return true;
+        }
+    void print()
+    {
+        LinkedList ptr;
+        ptr=head;
+        while(ptr!=null)
+        {
+            System.out.println(ptr.activity);
         }
     }
-};
+    
+    public static void main(String[] args) {
+        LMSdistribution linkedlist=new LMSdistribution();
+        linkedlist.Readcsv();
+        linkedlist.print();
+    }
+    
 }
